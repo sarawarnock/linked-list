@@ -61,6 +61,92 @@ class LinkedList {
         };
         return nodes;
     }
+
+    //deleting items
+    //by default, the function deletes all nodes with a given value, but if we pass true as the second arg. it will delete just the first ndoe with that value
+    delete(value, deleteOne = false) {
+        if (!this.head) return false;
+        let deletedNode = null;
+
+        //if the head needs to be deleted
+        while (this.head && this.head.value === value) {
+            this.size -= 1;
+            deletedNode = this.head;
+            this.head = this.head.next;
+            if (deleteOne) return true;
+        };
+
+        let currentNode = this.head;
+
+        //if any node except the head or tail needs to be deleted
+        if (currentNode !== null) {
+            while (currentNode.next) {
+                if (currentNode.next.value === value) {
+                    this.size -= 1;
+                    deletedNode = currentNode.next;
+                    currentNode.next = currentNode.next.next;
+                    if (deleteOne) return true;
+                }
+                else {
+                    currentNode = currentNode.next;
+                };
+            };
+        };
+
+        //if the tail needs to be deleted
+        if (this.tail.value === value) {
+            this.tail = currentNode;
+        };
+
+        if (deletedNode === null) {
+            return false;
+        }
+        else {
+            return true;
+        };
+    }
+
+    //accessing entries - linear time complexity, need to iterate through the entire list
+
+    //includes - accept either a value or an instance of the LinkedListNode class 
+    //return true or false
+    includes(value) {
+        if (!this.head) return false;
+
+        let isNode = value.constructor.name === 'LinkedListNode';
+        if (isNode) value = value.value;
+
+        let currentNode = this.head;
+
+        while (currentNode) {
+            if (value !== undefined && value === currentNode.value) {
+                return true;
+            };
+            currentNode = currentNode.next;
+        };
+
+        return false;
+    }
+
+    //find - should return the value of the first element in the list that satisfies a provided callback function otherwise return undefined
+    find(callback) {
+        if (Object.prototype.toString.call(callback) !== '[object Function]') {
+            return new TypeError(callback + ' is not a function');
+        };
+
+        if (!this.head) return undefined
+        
+        let currentNode = this.head;
+
+        while (currentNode) {
+            if (callback && callback(currentNode.value)) {
+                return currentNode;
+            };
+            currentNode = currentNode.next;
+        };
+
+        return undefined;
+    }
 }
 
 module.exports = LinkedList;
